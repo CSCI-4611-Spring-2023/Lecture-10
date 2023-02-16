@@ -102,7 +102,17 @@ export class AngryBees extends gfx.GfxApp
 
     update(deltaTime: number): void 
     {
-        const a = new gfx.Vector3(0, 0, 0);
+        if(this.bee.position.y < 0.1)
+        {
+            this.bee.position.set(-3.5, 0.5, -5);
+            this.beeVelocity.set(0, 0, 0);
+        }
+
+        // If the bee is not moving, don't apply physics
+        if(this.beeVelocity.length() == 0)
+            return;
+
+        const a = new gfx.Vector3(0, -5, 0);
 
         // v' = v + a * dt
         this.beeVelocity.add(gfx.Vector3.multiplyScalar(a, deltaTime));
@@ -126,6 +136,12 @@ export class AngryBees extends gfx.GfxApp
         if(event.button == 0)
         {
             this.line.visible = false;
+
+            const mouseEnd = this.getNormalizedDeviceCoordinates(event.x, event.y);
+            const mouseVector = gfx.Vector2.subtract(mouseEnd, this.mouseStart);
+
+            this.beeVelocity.set(mouseVector.x, mouseVector.y, 0);
+            this.beeVelocity.multiplyScalar(6);
         }
     }
 
@@ -149,7 +165,6 @@ export class AngryBees extends gfx.GfxApp
                 this.line.lookAt(lookPosition);
                 this.line.scale.z = mouseVector.length()*4;
                 this.line.translateZ(-this.line.scale.z/2);
-                
             }
         } 
     }
