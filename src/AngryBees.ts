@@ -11,8 +11,11 @@ export class AngryBees extends gfx.GfxApp
     private ground: gfx.BoxMesh;
     private skybox: gfx.BoxMesh;
     private bee: gfx.Transform3;
+    private line: gfx.BoxMesh;
 
     private beeVelocity: gfx.Vector3;
+
+    private mouseStart: gfx.Vector2;
 
     constructor()
     {
@@ -21,8 +24,11 @@ export class AngryBees extends gfx.GfxApp
         this.ground = new gfx.BoxMesh();
         this.skybox = new gfx.BoxMesh();
         this.bee = new gfx.Transform3();
+        this.line = new gfx.BoxMesh();
 
         this.beeVelocity = new gfx.Vector3();
+
+        this.mouseStart = new gfx.Vector2();
     }
 
     createScene(): void 
@@ -81,21 +87,42 @@ export class AngryBees extends gfx.GfxApp
         this.bee.rotation.setRotationY(-Math.PI/2);
         this.bee.scale.set(0.25, 0.25, 0.25);
 
+        this.line.scale.set(0.02, 0.02, 1);
+        this.line.material = new gfx.UnlitMaterial();
+        this.line.material.setColor(gfx.Color.BLUE);
+        this.line.visible = false;
+
         this.scene.add(ambientLight);
         this.scene.add(directionalLight);
         this.scene.add(this.ground);
         this.scene.add(this.skybox);
         this.scene.add(this.bee);
+        this.scene.add(this.line);
     }
 
     update(deltaTime: number): void 
     {
-        const a = new gfx.Vector3(1, 0.5, 0);
+        const a = new gfx.Vector3(0, 0, 0);
 
         // v' = v + a * dt
         this.beeVelocity.add(gfx.Vector3.multiplyScalar(a, deltaTime));
 
         // p' = p + v' * dt
         this.bee.position.add(gfx.Vector3.multiplyScalar(this.beeVelocity, deltaTime));
+    }
+
+    onMouseDown(event: MouseEvent): void 
+    {
+
+    }
+
+    onMouseUp(event: MouseEvent): void 
+    {
+
+    }
+
+    onMouseMove(event: MouseEvent): void 
+    {
+
     }
 }
