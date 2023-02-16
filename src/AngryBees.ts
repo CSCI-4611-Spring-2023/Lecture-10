@@ -113,16 +113,35 @@ export class AngryBees extends gfx.GfxApp
 
     onMouseDown(event: MouseEvent): void 
     {
-
+        // Left mouse button
+        if(event.button == 0)
+        {
+            this.mouseStart = this.getNormalizedDeviceCoordinates(event.x, event.y);
+        }
     }
 
     onMouseUp(event: MouseEvent): void 
     {
-
+        // Left mouse button
+        if(event.button == 0)
+        {
+            this.line.visible = false;
+        }
     }
 
     onMouseMove(event: MouseEvent): void 
     {
+        // If only the left mouse button is pressed down
+        if(event.buttons == 1)
+        {
+            const mouseEnd = this.getNormalizedDeviceCoordinates(event.x, event.y);
+            const mouseVector = gfx.Vector2.subtract(mouseEnd, this.mouseStart);
 
+            if(mouseVector.length() > 0.05)
+            {
+                this.line.visible = true;
+                this.line.position.copy(this.bee.position);
+            }
+        } 
     }
 }
