@@ -12,6 +12,7 @@ export class AngryBees extends gfx.GfxApp
     private skybox: gfx.BoxMesh;
     private bee: gfx.Transform3;
     private line: gfx.BoxMesh;
+    private target: gfx.SphereMesh;
 
     private beeVelocity: gfx.Vector3;
 
@@ -25,6 +26,7 @@ export class AngryBees extends gfx.GfxApp
         this.skybox = new gfx.BoxMesh();
         this.bee = new gfx.Transform3();
         this.line = new gfx.BoxMesh();
+        this.target = new gfx.SphereMesh(1, 2);
 
         this.beeVelocity = new gfx.Vector3();
 
@@ -83,14 +85,21 @@ export class AngryBees extends gfx.GfxApp
         beeWingRight.rotateZ(-Math.PI/8);
         this.bee.add(beeWingRight);
 
-        this.bee.position.set(-3.5, 0.5, -5);
+        this.reset();
         this.bee.rotation.setRotationY(-Math.PI/2);
         this.bee.scale.set(0.25, 0.25, 0.25);
+        this.bee.boundingSphere.radius = 0.5;
+        this.bee.boundingBox.min.set(-1, -1, -1);
+        this.bee.boundingBox.max.set(1, 1, 1);
 
         this.line.scale.set(0.02, 0.02, 1);
         this.line.material = new gfx.UnlitMaterial();
         this.line.material.setColor(gfx.Color.BLUE);
         this.line.visible = false;
+
+        this.target.scale.set(0.5, 0.5, 0.5);
+        this.target.position.set(3.5, 0.5, -5);
+        this.target.material.setColor(gfx.Color.RED);
 
         this.scene.add(ambientLight);
         this.scene.add(directionalLight);
@@ -98,14 +107,14 @@ export class AngryBees extends gfx.GfxApp
         this.scene.add(this.skybox);
         this.scene.add(this.bee);
         this.scene.add(this.line);
+        this.scene.add(this.target);
     }
 
     update(deltaTime: number): void 
     {
         if(this.bee.position.y < 0.1)
         {
-            this.bee.position.set(-3.5, 0.5, -5);
-            this.beeVelocity.set(0, 0, 0);
+            this.reset();
         }
 
         // If the bee is not moving, don't apply physics
@@ -119,6 +128,18 @@ export class AngryBees extends gfx.GfxApp
 
         // p' = p + v' * dt
         this.bee.position.add(gfx.Vector3.multiplyScalar(this.beeVelocity, deltaTime));
+    
+        if(this.bee.intersects(this.target, gfx.IntersectionMode3.BOUNDING_SPHERE))
+        {
+            this.target.material.setColor(new gfx.Color(Math.random(), Math.random(), Math.random()));
+            this.reset();
+        }
+    }
+
+    reset(): void
+    {
+        this.bee.position.set(-3.5, 0.5, -5);
+        this.beeVelocity.set(0, 0, 0);
     }
 
     onMouseDown(event: MouseEvent): void 
