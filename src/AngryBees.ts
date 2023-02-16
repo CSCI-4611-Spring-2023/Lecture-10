@@ -141,6 +141,15 @@ export class AngryBees extends gfx.GfxApp
             {
                 this.line.visible = true;
                 this.line.position.copy(this.bee.position);
+
+                const lookPosition = this.line.position.clone();
+                lookPosition.x += mouseVector.x;
+                lookPosition.y += mouseVector.y;
+
+                this.line.lookAt(lookPosition);
+                this.line.scale.z = mouseVector.length()*4;
+                this.line.translateZ(-this.line.scale.z/2);
+                
             }
         } 
     }
